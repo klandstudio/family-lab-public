@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2007 Silverado Classic 4.8L (Gen 3) — Suppressing Downstream O2 Sensor Codes</title>
+<style>
+  :root{
+    --ink:#1a1d21; --muted:#5b6470; --line:#dfe3e8; --bg:#fff;
+    --ok:#1f7a4d; --okbg:#e8f5ee; --warn:#a8620a; --warnbg:#fdf3e3;
+    --bad:#a32020; --badbg:#fbecec; --info:#1f5b8f; --infobg:#eaf2f9;
+    --codebg:#f4f6f8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:#eceef1; color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:980px; margin:0 auto; background:var(--bg); padding:0 0 80px;
+    box-shadow:0 0 40px rgba(0,0,0,.08)}
+  header{padding:44px 48px 30px; border-bottom:3px solid var(--ink); background:#f8f9fa}
+  header h1{margin:0 0 6px; font-size:1.95rem; line-height:1.22; letter-spacing:-.02em}
+  header .sub{color:var(--muted); font-size:1.04rem; margin:0 0 4px}
+  header .meta{margin-top:18px; font-size:.85rem; color:var(--muted)}
+  main{padding:0 48px}
+  section{padding:32px 0; border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  h2{font-size:1.45rem; margin:0 0 6px; letter-spacing:-.01em}
+  h2 .num{color:var(--muted); font-weight:400; margin-right:10px}
+  h3{font-size:1.1rem; margin:26px 0 6px}
+  h4{font-size:.98rem; margin:18px 0 5px; color:#333}
+  p{margin:10px 0}
+  a{color:var(--info)}
+  code{background:var(--codebg); padding:1px 5px; border-radius:3px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.88em}
+  pre{background:var(--codebg); padding:14px 16px; border-radius:5px; overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.83rem; line-height:1.5}
+  table{border-collapse:collapse; width:100%; margin:16px 0; font-size:.92rem}
+  th,td{border:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top}
+  th{background:#f1f3f5; font-weight:600}
+  tr:nth-child(even) td{background:#fafbfc}
+  .box{padding:14px 18px; border-radius:5px; margin:16px 0; border-left:4px solid}
+  .box p:first-child{margin-top:0} .box p:last-child{margin-bottom:0}
+  .box .lbl{font-weight:700; text-transform:uppercase; font-size:.76rem;
+    letter-spacing:.08em; display:block; margin-bottom:4px}
+  .good{background:var(--okbg); border-color:var(--ok)} .good .lbl{color:var(--ok)}
+  .warn{background:var(--warnbg); border-color:var(--warn)} .warn .lbl{color:var(--warn)}
+  .bad{background:var(--badbg); border-color:var(--bad)} .bad .lbl{color:var(--bad)}
+  .info{background:var(--infobg); border-color:var(--info)} .info .lbl{color:var(--info)}
+  .toc{background:#f8f9fa; border:1px solid var(--line); border-radius:6px; padding:18px 24px}
+  .toc ol{margin:6px 0 0; padding-left:22px; columns:2; column-gap:34px}
+  .toc li{margin:4px 0; break-inside:avoid}
+  .toc a{text-decoration:none}
+  .price{font-weight:700; white-space:nowrap}
+  .tag{display:inline-block; font-size:.7rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:.05em; padding:2px 7px; border-radius:3px; vertical-align:middle; margin-left:6px}
+  .t-ok{background:var(--okbg); color:var(--ok)}
+  .t-warn{background:var(--warnbg); color:var(--warn)}
+  .t-bad{background:var(--badbg); color:var(--bad)}
+  .t-info{background:var(--infobg); color:var(--info)}
+  .lead{font-size:1.05rem; color:#333}
+  ul,ol{padding-left:24px} li{margin:5px 0}
+  .small{font-size:.88rem; color:var(--muted)}
+  .checklist{list-style:none; padding-left:0}
+  .checklist li{padding-left:30px; position:relative; margin:9px 0}
+  .checklist li:before{content:"\25A1"; position:absolute; left:4px; top:-1px;
+    font-size:1.25rem; color:var(--muted)}
+  .phase{border:1px solid var(--line); border-left:4px solid var(--info);
+    border-radius:5px; padding:15px 20px; margin:18px 0; background:#fff}
+  .phase h4{margin:0 0 10px; font-size:.8rem; color:var(--info);
+    text-transform:uppercase; letter-spacing:.06em}
+  .tscroll{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:16px 0}
+  .tscroll > table{margin:0}
+  footer{padding:26px 48px 0; color:var(--muted); font-size:.85rem}
+  @media print{
+    body{background:#fff} .wrap{box-shadow:none; max-width:100%}
+    a{color:var(--ink); text-decoration:none}
+    section{break-inside:avoid} h2,h3{break-after:avoid}
+    .tscroll{overflow:visible}
+  }
+  @media (max-width:700px){
+    header,main,footer{padding-left:20px; padding-right:20px}
+    .toc ol{columns:1}
+    .tscroll.wide > table{min-width:440px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header id="top">
+  <h1>2007 Silverado Classic 4.8L &mdash; Downstream O2 Sensor Codes</h1>
+  <p class="sub">Suppressing the check-engine light caused by absent post-catalyst oxygen sensors, using free open-source tooling</p>
+  <p class="meta">
+    <strong>Vehicle:</strong> 2007 Chevrolet Silverado 1500 Classic (GMT800) &middot; 4.8L LR4 V8 &middot; Gen 3<br>
+    <strong>Engine computer:</strong> GM P01 / P59 family (confirm exact part number)<br>
+    <strong>Document:</strong> klandstudio/family-lab &middot; September 2026
+  </p>
+</header>
+
+<main>
+
+<nav class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#s1">The job, in one page</a></li>
+    <li><a href="#s2">Why this truck is an easy case</a></li>
+    <li><a href="#s3">Read the codes first</a></li>
+    <li><a href="#s4">The adapter</a></li>
+    <li><a href="#s5">The free software</a></li>
+    <li><a href="#s6">The alternative: a sensor simulator</a></li>
+    <li><a href="#s7">Step-by-step</a></li>
+    <li><a href="#s8">Watchouts</a></li>
+    <li><a href="#s9">References</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2><span class="num">1</span>The job, in one page</h2>
+
+  <p class="lead">An aftermarket exhaust has been fitted with no downstream (post-catalyst) oxygen sensors. The engine computer sees the open circuits, sets the corresponding codes, and lights the check-engine light. The goal is to stop the lamp without removing fault detection for anything else.</p>
+
+  <h3>The correct fix, in principle</h3>
+
+  <p>Suppress the <strong>MIL</strong> (malfunction indicator lamp) for the specific sensor codes only. Do <strong>not</strong> disable the check-engine light globally, and do <strong>not</strong> delete the codes. That way:</p>
+
+  <ul>
+    <li>The fault still records, so the history is honest.</li>
+    <li>The ECU still knows the sensor is missing and can apply its own workaround.</li>
+    <li>Every <em>other</em> warning light still works if something genuinely breaks.</li>
+  </ul>
+
+  <p>This is the convention in the tuning community, and it is what the tooling described below implements &mdash; it edits the lamp bit in the fault status table rather than the code itself.</p>
+
+  <h3>Two things to confirm before starting</h3>
+  <ol>
+    <li><strong>Is the catalyst still fitted?</strong> If the catalytic converter is also gone, expect <code>P0420</code> / <code>P0430</code> (catalyst efficiency below threshold). Those are a <em>different</em> problem and no sensor work will fix them.</li>
+    <li><strong>Is the upstream sensor healthy?</strong> The manifold-side sensor is what controls fuelling. If that one is faulty, the drivability complaint is a real fault and should be fixed properly, not suppressed.</li>
+  </ol>
+</section>
+
+<section id="s2">
+  <h2><span class="num">2</span>Why this truck is an easy case</h2>
+
+  <p>Platform identification matters a great deal here, and the Gen&nbsp;3 4.8L is considerably better served by open tooling than the later Gen&nbsp;4 engines.</p>
+
+  <div class="tscroll wide">
+  <table>
+    <tr><th>Model year</th><th>Engine</th><th>Crank</th><th>Cam gear</th><th>Cam bolts</th><th>Engine computer</th></tr>
+    <tr><td>1999&ndash;2002</td><td>4.8L / 5.3L / 6.0L</td><td>24X</td><td>1X, on camshaft</td><td>3</td><td>Red / Blue</td></tr>
+    <tr><td>2003&ndash;2007</td><td>4.8L / 5.3L / 6.0L</td><td>24X</td><td>1X, on camshaft</td><td>3</td><td>Green / Blue</td></tr>
+  </table>
+  </div>
+
+  <p>Confirm by VIN: the eighth character is the engine code. <code>V</code> = <strong>LR4</strong> = 4.8L = Gen&nbsp;3. The Gen&nbsp;4 4.8Ls (<code>L20</code> = <code>A</code>, <code>LY2</code> = <code>C</code>) only appear in the GMT900 body from 2007, which is sold alongside the &ldquo;Classic&rdquo; as a different model. A &ldquo;Classic&rdquo; with a <code>V</code> is unambiguous.</p>
+
+  <h3>Tooling support, P01 / P59 versus the newer E38</h3>
+
+  <div class="tscroll wide">
+  <table>
+    <tr><th>Capability</th><th>P01 / P59 (this truck)</th><th>E38 (2007&ndash;2013 GMT900)</th></tr>
+    <tr><td>Full flash read</td><td><span class="tag t-ok">Yes</span></td><td><span class="tag t-ok">Yes</span></td></tr>
+    <tr><td>Full flash write</td><td><span class="tag t-ok">Yes</span></td><td><span class="tag t-ok">Yes</span></td></tr>
+    <tr><td><strong>Segment write</strong></td><td><span class="tag t-ok">Yes</span></td><td><span class="tag t-bad">No</span></td></tr>
+    <tr><td><strong>Clone / parameter write</strong></td><td><span class="tag t-ok">Yes</span></td><td><span class="tag t-bad">No</span></td></tr>
+    <tr><td>Recovery write</td><td>N/A</td><td><span class="tag t-bad">No</span></td></tr>
+    <tr><td>Boot sector write</td><td><span class="tag t-ok">Yes</span></td><td><span class="tag t-ok">Yes</span></td></tr>
+    <tr><td>Fault-code search configurations</td><td><span class="tag t-ok">5</span> (most of any platform)</td><td>1</td></tr>
+    <tr><td>Published XDF definitions</td><td><span class="tag t-ok">Yes</span> (community)</td><td><span class="tag t-bad">None</span> (empty placeholders)</td></tr>
+    <tr><td>Slave processor</td><td>None</td><td>Present (throttle calibration)</td></tr>
+  </table>
+  </div>
+
+  <div class="box good">
+    <span class="lbl">Why this matters here</span>
+    <p>Both platforms run the same open-source flashing tool, but <strong>segment and clone writes are supported on P01/P59 and not on E38</strong>. Suppressing a couple of fault flags does not require rewriting the whole megabyte of flash &mdash; a segment write touches only the calibration area. That is a materially smaller operation, and it is the single biggest reason to prefer the free route on this truck.</p>
+  </div>
+
+  <div class="box warn">
+    <span class="lbl">One risk is not different</span>
+    <p>Both platforms use the tool authors' clean-room &ldquo;Assembly&rdquo; kernel, and they are explicit that it <em>&ldquo;has been reported to lock up the DLC in the field under some circumstances. We do not yet know the cause, or how often this happens.&rdquo;</em> Bench flashing is still the recommended method. The kernel is not the improvement here &mdash; the write granularity is.</p>
+  </div>
+</section>
+
+<section id="s3">
+  <h2><span class="num">3</span>Read the codes first</h2>
+
+  <p>This costs nothing and could make the whole project unnecessary. Any code reader will do.</p>
+
+  <div class="tscroll wide">
+  <table>
+    <tr><th>Code</th><th>Meaning</th><th>Action</th></tr>
+    <tr><td><code>P0132</code></td><td>O2 circuit low voltage (bank 1, sensor 2)</td><td>Suppressible</td></tr>
+    <tr><td><code>P0134</code></td><td>O2 circuit high voltage (bank 1, sensor 2)</td><td>Suppressible</td></tr>
+    <tr><td><code>P0139</code></td><td>O2 circuit slow response (bank 1, sensor 2)</td><td>Suppressible</td></tr>
+    <tr><td><code>P0141</code></td><td>O2 heater circuit (bank 1, sensor 2)</td><td>Suppressible</td></tr>
+    <tr><td><code>P0155</code></td><td>O2 heater circuit (bank 2, sensor 2)</td><td>Suppressible</td></tr>
+    <tr><td><code>P0158</code> / <code>P0160</code></td><td>O2 circuit high / low (bank 2, sensor 2)</td><td>Suppressible</td></tr>
+    <tr><td><code>P0420</code> / <code>P0430</code></td><td>Catalyst efficiency below threshold</td><td><strong>Not fixable by sensor work</strong></td></tr>
+  </table>
+  </div>
+
+  <p>Note that the bank&nbsp;2 codes are <code>P015x</code> / <code>P016x</code>, not <code>P014x</code>. It is easy to mis-key these. On a V8 with a single exhaust there are two downstream sensors, one per bank, so expect both sets.</p>
+
+  <div class="box info">
+    <span class="lbl">Also check</span>
+    <p>Absent sensors commonly bring on the fuel-trim monitors as well, and sometimes an evaporative-emissions code if the exhaust change disturbed a vacuum or evap line. Read the <em>full</em> code list and the freeze-frame data before deciding what to suppress. Anything that looks unrelated to the exhaust change is a genuine fault and should be diagnosed normally.</p>
+  </div>
+</section>
+
+<section id="s4">
+  <h2><span class="num">4</span>The adapter</h2>
+
+  <p class="lead">One purchase, and it is the only mandatory hardware. The engine computer communicates on <strong>VPW (J1850)</strong>, and writing to it requires a <strong>J2534 pass-through</strong> interface. This is a different standard from the ordinary &ldquo;OBD2&rdquo; cable.</p>
+
+  <h3>Buy this</h3>
+  <div class="tscroll">
+  <table>
+    <tr><th style="width:130px">Product</th><td><a href="https://obdxpro.com/product/obdx-pro-gt-obd2-diagnostics-and-tuning">OBDX Pro GT</a></td></tr>
+    <tr><th>Price</th><td><span class="price">$140 USD</span> (2026 list price; may rise)</td></tr>
+    <tr><th>Why</th><td>The free tool's authors name it as their recommended interface, and the vendor's own product page states it supports the command set &ldquo;used by advanced applications such as PCM Hammer&rdquo; &mdash; the exact software needed here.</td></tr>
+    <tr><th>Protocols</th><td>J2534 + D-PDU, VPW, high-speed CAN, GMLAN, Bluetooth / BLE / WiFi / USB</td></tr>
+    <tr><th>Shipping</th><td>US or Australian warehouse &mdash; choose the US warehouse if in the USA</td></tr>
+  </table>
+  </div>
+
+  <h3>Do not buy</h3>
+  <div class="tscroll wide">
+  <table>
+    <tr><th>Product</th><th>Why not</th></tr>
+    <tr>
+      <td><strong>Scantool OBDLink</strong> (any model)</td>
+      <td>The tool authors warn specifically: <em>&ldquo;We have seen soft bricks occurring&hellip; due to them being too slow and missing the OK response from the flash write. Be warned. Not Recommended.&rdquo;</em> Probably fine for reading; wrong tool for writing. This is the adapter most people would buy by default, which makes it the most likely mistake.</td>
+    </tr>
+    <tr>
+      <td>Cheap <strong>&ldquo;OBD2&rdquo; / ELM327</strong> cables ($10&ndash;$40)</td>
+      <td>Cannot read or write engine memory at all. Useful for a check-engine light and nothing more.</td>
+    </tr>
+    <tr>
+      <td>Marketplace <strong>&ldquo;J2534&rdquo;</strong> cables (~$20&ndash;$45)</td>
+      <td>Almost always re-badged cheap hardware. Saving $100 is not worth the risk when the total project cost is $140.</td>
+    </tr>
+  </table>
+  </div>
+
+  <h3>Also worth having</h3>
+  <ul>
+    <li><strong>Bench power supply</strong>, 12.5&ndash;14V, 1&nbsp;A minimum. A decent lab unit, or a charged vehicle battery with a good floating voltage. <em>Not</em> a USB phone charger &mdash; the tool authors specifically warn that cheap switch-mode supplies and thin wiring cause flash failures through voltage drop.</li>
+    <li><strong>Short, thick hookup leads</strong> for the same reason.</li>
+  </ul>
+</section>
+
+<section id="s5">
+  <h2><span class="num">5</span>The free software</h2>
+
+  <p>Everything below is free and open source. No subscription, no credits, no per-vehicle fee.</p>
+
+  <div class="tscroll wide">
+  <table>
+    <tr><th>Program</th><th>Role</th><th>Link</th></tr>
+    <tr>
+      <td><strong>Universal Patcher</strong></td>
+      <td><strong>The main program.</strong> Reads and writes the vehicle (it bundles PCM Hammer), maps the memory segments, handles checksums, lists and edits fault codes, and generates definitions. <span class="tag t-ok">GPL-3.0</span></td>
+      <td><a href="https://github.com/joukoy/UniversalPatcher">github.com/joukoy/UniversalPatcher</a></td>
+    </tr>
+    <tr>
+      <td><strong>PCM Hammer / PCM Logger</strong></td>
+      <td>Also released standalone. The read / write / logging engine. <span class="tag t-ok">Free</span></td>
+      <td><a href="https://github.com/PcmHammer/PcmHammer">github.com/PcmHammer/PcmHammer</a></td>
+    </tr>
+    <tr>
+      <td><strong>TunerPro</strong></td>
+      <td>Table / parameter editor. Free, ad-supported.</td>
+      <td><a href="https://www.tunerpro.net/">tunerpro.net</a></td>
+    </tr>
+    <tr>
+      <td><strong>Checksum plugins</strong></td>
+      <td>Includes <code>p01-checksum.xdf</code> and <code>p59-checksum.xdf</code> &mdash; required for TunerPro to recalculate checksums on save.</td>
+      <td><a href="https://github.com/joukoy/gm-checksum-plugins">github.com/joukoy/gm-checksum-plugins</a></td>
+    </tr>
+    <tr>
+      <td><strong>Community XDFs</strong></td>
+      <td>Existing definitions for P01 / P59, including the long-standing LRT sets for the 1&nbsp;MB P59 (<code>12587603</code>) and the P01 (<code>12212156</code>). Community-contributed &mdash; verify before trusting.</td>
+      <td><a href="https://github.com/BoredTruckOwner/LS_Based_Engine_Repository">BoredTruckOwner/LS_Based_Engine_Repository</a></td>
+    </tr>
+    <tr>
+      <td><strong>PCMBinBuilder</strong></td>
+      <td>Extracts the segment layout from a binary &mdash; useful for confirming a read is sane. Same author.</td>
+      <td><a href="https://github.com/joukoy/PCMBinBuilder">github.com/joukoy/PCMBinBuilder</a></td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="box good">
+    <span class="lbl">This is the part that makes the job tractable</span>
+    <p>Universal Patcher ships <strong>five</strong> fault-code search configurations for the P01/P59 family &mdash; more than for any other platform it supports, including four times as many as the E38. These are byte-pattern recipes that locate the fault-code table and the fault-status table inside the binary. A typical entry:</p>
+  </div>
+
+<pre>CodeSearch  : 18 30 35 B0
+StatusSearch: 18 30 31 B0 * * * * 67
+MilTable    : afterstatus
+CodeOffset  : 2      CodeSteps  : 4
+StatusOffset: 1      MilOffset  : 1
+MilSteps    : 1      MilTable   : combined</pre>
+
+  <p>The <code>MilTable</code> and <code>MilOffset</code> fields are the mechanism for the correct fix described in section&nbsp;1: the tool can clear the lamp bit in the status table while leaving the recorded code intact.</p>
+</section>
+
+<section id="s6">
+  <h2><span class="num">6</span>The alternative: a sensor simulator</h2>
+
+  <p>Instead of modifying the software, a device can be spliced into the wiring harness to <em>imitate</em> a working sensor. This avoids all flashing risk but is a permanent electrical addition.</p>
+
+  <h3>The product that fits</h3>
+  <div class="tscroll">
+  <table>
+    <tr><th style="width:130px">Product</th><td><a href="https://www.magnumtuning.com/en/detail/adjustable-oxygen-sensor-simulator/gmc/sierra">Adjustable O2 Sensor Simulator</a> (Magnum Performance)</td></tr>
+    <tr><th>Connectivity</th><td>&ldquo;Universal to oxygen sensor's harness (<strong>wire-cut required</strong>)&rdquo; &mdash; nothing exhaust-side, no sensor and no bung required</td></tr>
+    <tr><th>Fitment</th><td>1&ndash;4 wire narrowband zirconia sensors, 0&ndash;1.0V fluctuating &mdash; covers this generation</td></tr>
+    <tr><th>Quantity</th><td>A V8 with a single exhaust has <strong>two</strong> downstream sensors, one per bank. Order a pair.</td></tr>
+    <tr><th>Prerequisite</th><td>Their documentation notes the <em>upstream</em> sensor must be working correctly, or the downstream emulator will not satisfy the computer.</td></tr>
+  </table>
+  </div>
+
+  <p>Alternatives considered: the SymTech Labs iO2SS (~$60) is listed out of stock, and their plug-and-play configuration requires sending in an original sensor. A DIY resistor on the heater circuit (commonly 330&nbsp;&Omega; across the two heater wires) is very cheap, but the signal-side values commonly quoted online are derived from other manufacturers and have been reported to trade one code for another on other platforms.</p>
+
+  <h3>Software versus simulator</h3>
+  <div class="tscroll wide">
+  <table>
+    <tr><th>&nbsp;</th><th>Software MIL suppression</th><th>Sensor simulator</th></tr>
+    <tr><td>Cost</td><td>~$140 adapter + bench supply</td><td>~$&nbsp;&mdash;, two units</td></tr>
+    <tr><td>Risk of a dead computer</td><td>Low, if benched properly</td><td>None</td></tr>
+    <tr><td>Reversible</td><td>Yes &mdash; restore the stock file</td><td>Yes, but rewiring</td></tr>
+    <tr><td>Other warning lights still work</td><td><strong>Yes</strong></td><td>Yes</td></tr>
+    <tr><td>Sensor fault still detected</td><td>Code still records, lamp suppressed</td><td>Computer believes sensor is healthy &mdash; no record at all</td></tr>
+    <tr><td>Emissions test</td><td>Monitors will not complete</td><td>Monitors will not complete</td></tr>
+  </table>
+  </div>
+
+  <p>The simulator is cheaper and carries no risk of damaging the computer, but it is a lie that the computer believes completely. The software route leaves a truthful record. Either is defensible; the software route is the more conventional choice.</p>
+</section>
+
+<section id="s7">
+  <h2><span class="num">7</span>Step-by-step</h2>
+
+  <p>Phases 1&ndash;3 are safe, reversible, and produce something useful on their own. Do not skip ahead.</p>
+
+  <div class="phase">
+    <h4>Phase 1 &mdash; Read and record</h4>
+    <ul class="checklist">
+      <li>Read the full code list and freeze-frame data. Write it down. Photograph the check-engine light pattern.</li>
+      <li>Confirm which codes are downstream-sensor codes and which are not.</li>
+      <li>Confirm the catalyst is still fitted, and that the upstream sensors are healthy.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h4>Phase 2 &mdash; Identify the computer</h4>
+    <ul class="checklist">
+      <li>Read the part number from the label on the engine computer (behind a passenger-side trim panel under the dash, left of the steering wheel). Establish <strong>P01</strong> versus <strong>P59</strong> &mdash; a 2007 build is most likely the 2003&ndash;2007 unit, but confirm rather than assume.</li>
+      <li>Note the hardware and operating-system identifiers once the software can read them. Everything downstream depends on matching the right definition files.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h4>Phase 3 &mdash; Buy and set up</h4>
+    <ul class="checklist">
+      <li>Order the OBDX Pro GT. Order a bench supply if not already owned.</li>
+      <li>Install Universal Patcher (single program, no installer, extract to an empty folder). Install the adapter's USB driver and confirm it enumerates as a J2534 device.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h4>Phase 4 &mdash; Read the binary &nbsp;<span class="tag t-ok">Read-only, zero risk</span></h4>
+    <ul class="checklist">
+      <li>Perform a full read of the engine computer.</li>
+      <li><strong>Read it a second time and compare the two files byte-for-byte.</strong> They must be identical. If they are not, the connection is unreliable &mdash; fix that before proceeding. This check is the most important one in the whole procedure.</li>
+      <li>Keep <strong>three</strong> copies in separate folders, clearly labelled stock. This is the way back.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h4>Phase 5 &mdash; Map the file &nbsp;<span class="tag t-ok">Offline</span></h4>
+    <ul class="checklist">
+      <li>Open the binary in Universal Patcher and inspect the segment layout. Expect the classic GM arrangement: operating system, engine calibration, engine diagnostics, transmission calibration, transmission diagnostics, fuel, system, speedometer, EEPROM data.</li>
+      <li>Confirm the tool reads the existing checksums correctly and reproduces the file unchanged on a save. Get this working offline before touching the vehicle.</li>
+      <li>Note whether any codes are already stored in the binary from previous visits.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h4>Phase 6 &mdash; Identify and suppress the codes</h4>
+    <ul class="checklist">
+      <li>Use the fault-code search function to list the codes present in the binary. Locate the status table for the downstream-sensor codes.</li>
+      <li><strong>Suppress only the lamp for the sensor-circuit codes.</strong> Leave the code itself set so the record stays truthful and the computer retains its own workaround behaviour.</li>
+      <li>Do not touch codes unrelated to the exhaust change.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h4>Phase 7 &mdash; Write &nbsp;<span class="tag t-bad">Highest-risk step</span></h4>
+    <ul class="checklist">
+      <li>Save the modified file. Confirm the tool recalculated the checksums.</li>
+      <li><strong>Prefer a segment or clone write over a full-flash write</strong> &mdash; both are supported on this platform and both touch far less than the whole binary. Use a full write only if a partial one will not do the job.</li>
+      <li><strong>Bench flash. Do not write through the diagnostic port with the engine in the vehicle.</strong> Remove the computer, supply 12.5&ndash;14V at 1&nbsp;A minimum on short heavy leads, with ignition-on power and a good ground.</li>
+      <li>Verify the write by reading back and comparing.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <h4>Phase 8 &mdash; Verify</h4>
+    <ul class="checklist">
+      <li>Refit the computer. Clear codes from all other modules, which will have logged a communication fault while the computer was out.</li>
+      <li>Confirm the check-engine light stays off through a full drive cycle, including warm-up and the period after the transmission engages.</li>
+      <li><strong>Confirm every other warning light still functions.</strong> Introduce a fault and check the lamp still comes on. If it does not, the change was too broad &mdash; restore stock and start again.</li>
+      <li>Check for new codes in the other modules and clear them.</li>
+      <li>Record what was changed, in writing. Keeping the stock file means this is always reversible.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s8">
+  <h2><span class="num">8</span>Watchouts</h2>
+
+  <div class="box bad">
+    <span class="lbl">1. Bench flash, not in-vehicle</span>
+    <p>The tool authors are explicit that their replacement kernel <em>&ldquo;has been reported to lock up the DLC in the field under some circumstances&rdquo;</em> and that they do not know how often. &ldquo;Locking up the DLC&rdquo; means the diagnostic link hangs partway through a write. They recommend bench flashing by default, and warn specifically against cheap switch-mode power supplies and thin wiring.</p>
+  </div>
+
+  <div class="box bad">
+    <span class="lbl">2. No recovery capability</span>
+    <p>Neither platform has a recovery-write operation. An interrupted write means a replacement engine computer. This is the underlying reason for rule 1, and it is worth remembering when weighing whether a $140 adapter is the right purchase at all.</p>
+  </div>
+
+  <div class="box bad">
+    <span class="lbl">3. Do not write with an OBDLink</span>
+    <p>Documented soft-brick risk from its write timing. Fine for reading.</p>
+  </div>
+
+  <div class="box warn">
+    <span class="lbl">4. Never disable the check-engine light wholesale</span>
+    <p>Suppressing the lamp for specific codes is legitimate engineering. Blanking the MIL disables the one warning system the vehicle has, and is how engines end up running quietly until something expensive happens. Suppress narrowly.</p>
+  </div>
+
+  <div class="box warn">
+    <span class="lbl">5. A 19-year-old truck</span>
+    <p>A 2007 vehicle is at the end of its life. Confirm the computer and the wiring harness are healthy before assuming a flash is a reasonable risk. If the harness is corroded, the connector pins are green, or there is history of a previous failed flash, weigh the cost of a replacement computer against the benefit of suppressing a lamp.</p>
+  </div>
+
+  <div class="box warn">
+    <span class="lbl">6. Emissions testing will fail either way</span>
+    <p>Both a simulator and a suppressed lamp leave the readiness monitors incomplete. This is fine for an unregistered or exempt vehicle and a problem for one subject to inspection. Check the local rules before proceeding.</p>
+  </div>
+
+  <div class="box warn">
+    <span class="lbl">7. Legal</span>
+    <p>Removing emissions-related monitoring on a registered vehicle is regulated in most jurisdictions, and enforcement is separate from vehicle registration. This document is not legal advice. Where a vehicle is subject to inspection, get advice first.</p>
+  </div>
+
+  <div class="box warn">
+    <span class="lbl">8. Community files are unverified</span>
+    <p>The XDF definitions and checksum plugins are enthusiast-contributed and provided &ldquo;at your own risk.&rdquo; A known instance elsewhere in the GM ecosystem is a definition file with a one-byte offset error that shifts a displayed value. Sanity-check that decoded values make sense &mdash; a calibration table should contain smooth, plausible numbers, not noise &mdash; before trusting any address.</p>
+  </div>
+</section>
+
+<section id="s9">
+  <h2><span class="num">9</span>References</h2>
+
+  <h3>Primary tools</h3>
+  <ul>
+    <li><a href="https://github.com/joukoy/UniversalPatcher">Universal Patcher</a> &mdash; the main program. The <code>XML/</code> folder holds the platform definitions, including the P01/P59 fault-code search configs.</li>
+    <li><a href="https://universalpatcher.net/">universalpatcher.net</a> &mdash; documentation and guides.</li>
+    <li><a href="https://pcmhammer.github.io/users">PCM Hammer &mdash; for users</a> &mdash; walkthrough and supported-device list.</li>
+    <li><a href="https://github.com/joukoy/gm-checksum-plugins">gm-checksum-plugins</a> &mdash; required P01 / P59 checksum handling.</li>
+  </ul>
+
+  <h3>Community</h3>
+  <ul>
+    <li><a href="https://pcmhacking.net/">pcmhacking.net</a> &mdash; the forum this toolchain comes from. Deep, technical, and active.</li>
+    <li><a href="https://github.com/BoredTruckOwner/LS_Based_Engine_Repository">LS_Based_Engine_Repository</a> &mdash; community XDFs and stock binaries for P01 / P59.</li>
+    <li><a href="https://github.com/jakka351/OpenJ2534">OpenJ2534</a> &mdash; an index of open-source automotive diagnostic and tuning resources; the best overview of the wider field.</li>
+  </ul>
+
+  <h3>Hardware</h3>
+  <ul>
+    <li><a href="https://obdxpro.com/">obdxpro.com</a> &mdash; adapter, drivers, J2534 API.</li>
+    <li><a href="https://www.tactrix.com/index.php?option=com_content&amp;view=article&amp;id=64%3Awhat-is-j2534&amp;catid=41:J2534&amp;Itemid=41">What is J2534?</a> &mdash; the clearest plain-language explanation of the standard.</li>
+  </ul>
+
+  <h3>Background</h3>
+  <ul>
+    <li><a href="https://www.rockauto.com/en/catalog/chevy,chevrolet,2007,chevrolet,silverado,1500,4.8l+l8,331298">Engine identification</a> &mdash; RPO to VIN engine-code cross-reference; confirms <code>V</code> = LR4 = 4.8L Gen 3.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>klandstudio/family-lab &mdash; September 2026.</strong> Prices verified at time of writing and subject to change; the adapter vendor has announced increases for 2026.</p>
+  <p>This document assembles published project documentation, source code, and community forum reports about other vehicles. It has not been validated on any specific vehicle by the author. Treat it as a well-researched procedure rather than a proven one, and treat every community-supplied address or definition as unverified until independently checked.</p>
+</footer>
+
+</div>
+</body>
+</html>
